@@ -1,0 +1,213 @@
+\documentclass[12pt,letterpaper]{article}
+\newcommand*{\plogo}{\fbox{$\mathcal{PL}$}}
+\usepackage[a4paper]{geometry}
+\geometry{left=1.7cm,right=2cm,top=2.2cm,bottom=3cm}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{stackengine}
+\usepackage{graphicx}
+\usepackage{multirow}
+\usepackage{ragged2e}
+\usepackage{enumitem}
+\usepackage{amsmath}
+\usepackage{ wasysym }
+\usepackage{fancyhdr}
+\usepackage[dvipsnames]{xcolor}
+%Comandos para las cajitas TO DO LIST
+\usepackage{enumitem,amssymb}
+\newlist{todolist}{itemize}{2}
+\setlist[todolist]{label=$\square$}
+\usepackage{pifont}
+\newcommand{\cmark}{\ding{51}}%
+\newcommand{\xmark}{\ding{55}}%
+\newcommand{\done}{\rlap{$\square$}{\raisebox{2pt}{\large\hspace{1pt}\cmark}}%
+\hspace{-2.5pt}}
+\newcommand{\wontfix}{\rlap{$\square$}{\large\hspace{1pt}\xmark}}
+\usepackage{tcolorbox}
+\tcbuselibrary{listingsutf8}
+\usepackage{array}
+\usepackage[dvipsnames]{xcolor}
+\usepackage{amssymb}
+\usepackage[spanish]{babel}
+\usepackage[fixlanguage]{babelbib}
+    \bibliographystyle{babunsrt}
+\usepackage{url}  
+\usepackage[dvipsnames]{xcolor}
+\usepackage{ifsym}
+\usepackage{amssymb}
+\usepackage{hyperref}
+
+\begin{document}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[C]{}
+\rhead {Proyecto Final: Centro de Contactos} 
+\lhead {Consultas} 
+\rfoot{\thepage}
+\begin{center}
+   \section*{Consultas diseñadas} 
+\end{center}
+
+\begin{enumerate}
+    \item \textbf{Información de los cursos que se tienen activos} \\
+    Consulta:\\
+    \textsc{ SELECT * FROM curso WHERE fecha\_fin < (SELECT NOW() );}\\devuelve los siguientes datos de los cursos que se encuentran activos.
+\begin{itemize}
+        \item $id\_curso$
+        \item $id\_entrenador$
+        \item $id\_sala\_entrenamiento$
+        \item $id\_piso$
+        \item $id\_edificio$
+        \item $id\_cliente$
+        \item $nombre\_curso$
+        \item $turno$
+        \item $fecha\_inicio$
+        \item $fecha\_fin$
+        \item $modalidad$
+        \item $num\_horas$
+    \end{itemize}
+\begin{figure}[h!]
+    \centering
+    \includegraphics[scale=.4]{PROYECTOFINAL/Consultas/1.png}
+\end{figure}
+
+\newpage
+    \item \textbf{Entrenadores que se encuentran dando un curso} \\
+    Consulta:\\ \textsc{SELECT * FROM (entrenador LEFT JOIN curso\\ ON entrenador.curp=curso.id\_entrenador)\\ WHERE (id\_curso IS NOT NULL);} \\Devuelve los 35 entrenadores  que están dando curso con sus respectivos datos, lo que son\\
+    \texttt{CURP, Id\_piso, Id\_edificio, nombre, apellido\_pat, apellido\_mat, fecha\_nacimiento,} dirección \textttt{(calle, num\_exterior, colonia, municipio), estado, cp }(Código Postal), \texttt{telefono, correo, fotografia, salario\_x\_hora, nss} (Número de Seguridad Social), \texttt{fecha\_inicio,\\Id\_curso, Id\_entrenador,Id\_sala\_entrenamiento, Id\_piso, Id\_edificio} (los cuales se muestran nulos debido a que son impartidos en línea), \texttt{Id\_cliente, nombre\_curso, turno, fecha\_inicio, fecha\_fin, modalidad, num\_horas}.
+    \begin{figure}[h]
+        \centering
+        \includegraphics[scale=.35]{PROYECTOFINAL/Consultas/2.1.png}
+    \end{figure}
+    \begin{figure}[h]
+        \centering
+        \includegraphics[scale=.38]{PROYECTOFINAL/Consultas/2.2.png}
+    \end{figure}
+    \begin{figure}[h]
+        \centering
+        \includegraphics[scale=.35]{PROYECTOFINAL/Consultas/2.3.png}
+    \end{figure}
+
+\newpage
+    \item \textbf{Cantidad de horas máximas de los cursos}\\     
+    Consulta:\\
+    \textsc{ SELECT MAX (num\_horas) FROM curso;}
+    \begin{figure}[h]
+        \centering
+        \includegraphics[scale=.5]{PROYECTOFINAL/Consultas/3.png}
+    \end{figure}
+
+    
+    \item \textbf{El historial de cursos de los clientes en específico}\\
+    Se crea una tabla historial\_curso que contiene los datos que nos interesan almacenar
+    \begin{figure}[h!]
+      \centering
+      \includegraphics[scale=.5]{PROYECTOFINAL/Consultas/4.1.png}
+  \end{figure}\\
+  Consulta:\\ \textsc{ SELECT * FROM (SELECT * FROM historial\_cursos\\ WHERE id\_cliente='DODD3310206E5') AS A UNION
+	 (SELECT id\_curso, \\id\_cliente,nombre\_curso,turno,fecha\_inicio,fecha\_fin FROM curso \\WHERE id\_cliente='DODD3310206E5' OR\ id\_cliente='HAQD979294S1' OR\ id\_cliente='SKFF767755A2');}\\
+ Que como resultado devuelve el historial de cursos los clientes con el ID:
+\begin{align*}
+    &DODD3310206E5,\\&HAQD979294S1,\\&SKFF767755A2
+\end{align*}
+De los cuales solo se encuentran 5 resultados en la Base de Datos
+\begin{figure}[h]
+    \centering
+    \includegraphics[scale=.5]{PROYECTOFINAL/Consultas/4.2.png}
+\end{figure}
+\newpage
+    \item  \textbf{Nombre del agente\_telefonico con evaluación menor a 8} \\
+    Consulta:\\ \textsc{ SELECT nombre FROM agente\_telefonico\\ WHERE (agente\_telefonico.evaluacion < 8);}\\ Regresa exactamente los 25 agentes telefónicos donde se nos presenta su respectivo nombre con  evaluación no aprobatoria, es decir, menor a 8.
+
+    \begin{figure}[h]
+        \centering
+        \includegraphics[scale=.5]{PROYECTOFINAL/Consultas/5.png}
+    \end{figure}
+
+    
+    \item \textbf{Salas de operaciones que se encuentran disponibles} \\
+     Consulta:\\ \textsc{ SELECT id\_piso FROM sala\_operaciones\\WHERE sala\_operaciones.estado = 0;}\\Devuelve los 19 ID's de los pisos disponibles.
+    \begin{figure}[h]
+        \centering
+        \includegraphics[scale=.5]{PROYECTOFINAL/Consultas/6.png}
+    \end{figure}
+
+   \newpage 
+    \item \textbf{Agentes telefónicos que han nacido antes del 2000} \\
+     Consulta:\\ \textsc{ SELECT * FROM agente\_telefonico WHERE EXTRACT(YEAR FROM agente\_telefonico.fecha\_nacimiento) < '2000';}
+    \begin{figure}[h]
+        \centering
+        \includegraphics[scale=.38]{PROYECTOFINAL/Consultas/7.1.png}\\
+         \includegraphics[scale=.4]{PROYECTOFINAL/Consultas/7.2.png}\\          \includegraphics[scale=.36]{PROYECTOFINAL/Consultas/7.3.png}
+    \end{figure}\\
+    Existen 89 agentes telefónicos que nacieron antes del 2000, y en la consulta aparecen sus datos personales como el $id\_piso$, $id\_edificio$ y $id\_curso$ en el que operan.
+    
+    \item \textbf{Clientes con sistema operativo \textit{Linux}}\\
+    Consulta:\\ \textsc{ SELECT rfc FROM cliente WHERE cliente.so = 'Linux';}\\ Nos devuelve en total 44 clientes con el  sistema operativo \textit{Linux}, en la tabla solo se mostrará su respectivo rfc.
+    \begin{figure}[h]
+        \centering
+        \includegraphics[scale=.36]{PROYECTOFINAL/Consultas/8.png}
+    \end{figure}
+%% 9<
+    \item \textbf{Datos de los entrenadores que viven en CDMX}\\
+  Consulta:\\  \textsc{ SELECT nombre,apellido\_pat,apellido\_mat FROM entrenador WHERE entrenador.estado = 'CDMX';} \\ Devuelve 26 valores, nombre, apellido\_pat y apellido\_mat de los entrenadores que viven en la CDMX.  \begin{figure}[h!]
+        \centering
+        \includegraphics[scale=.5]{PROYECTOFINAL/Consultas/9.png}
+    \end{figure}
+
+    \item \textbf{Horarios en el día \textit{Viernes}} \\
+    Consulta:\\ \textsc{ SELECT * FROM horario WHERE horario.dia = 'Viernes';} \\Devuelve el ID de los horarios, ID del curso, el día que corresponde, la hora de inicio y su hora final solamente de los días Viernes. Existen 11 valores con esta descripción, pero solo adjuntamos los 5 primeros.
+     \begin{figure}[h]
+         \centering
+         \includegraphics[scale=.5]{PROYECTOFINAL/Consultas/10.png}
+     \end{figure}
+
+
+    \newpage
+    \item \textbf{Entrenadores y cursos en el turno matutino} \\
+   Consulta:\\  \textsc{ SELECT id\_entrenador,nombre\_curso FROM curso\\ WHERE curso.turno = 'Matutino';}\\
+    Existen 15 entrenadores y sus respectivos cursos con el horario matutino y el nombre del mismo curso. Adjuntamos los primeros 7 que aparecen. 
+    \begin{figure}[h]
+        \centering
+        \includegraphics[scale=.5]{PROYECTOFINAL/Consultas/11.png}
+    \end{figure}
+
+    %%%% 11
+    
+    \item \textbf{Estaciones de operaciones en el edificio con ID=10} \\
+    Consulta:\\ \textsc{ SELECT * FROM (estacion\_operaciones\\ NATURAL JOIN aditamento\_operaciones) WHERE id\_edificio = 10;}\\
+     Existen 12 diferentes estaciones de operaciones con el mismo ID de edificio (10), aparece su respectivo sistema operativo, el nombre, aditamiento y lo que se muestra a continuación.
+     \begin{figure}[h]
+         \centering
+         \includegraphics[scale=.4]{PROYECTOFINAL/Consultas/12.png}
+     \end{figure}
+    %%% 12
+      \item \textbf{Agentes que adjuntaron una fotografía con extensión jpg} \\
+   Consulta:\\ \textsc{SELECT curp, nombre FROM agente\_telefonico\\ WHERE agente\_telefonico.fotografia LIKE '\%jpg';}\\
+     %%%%%%%%%%%% 14
+    Existen 52 agentes que la adjuntaron  con la extensión \textit{jpg}, se muestra su CURP y  nombre.
+     \begin{figure}[h]
+         \centering
+         \includegraphics[scale=.33]{PROYECTOFINAL/Consultas/14.png}
+     \end{figure}
+   \newpage 
+    \item \textbf{Persona de contacto cuales nombres inician con la letra A o B} \\
+Consulta:\\ \textsc{ SELECT * FROM cliente\\ WHERE (SELECT SUBSTRING (cliente.persona\_contacto, 1, 1) ILIKE 'A') OR (SELECT SUBSTRING (cliente.persona\_contacto, 1, 1) ILIKE 'B');} \\Existen 13 valores con las características requeridas.
+     \begin{figure}[h]
+         \centering
+         \includegraphics[scale=.4]{PROYECTOFINAL/Consultas/13.png}
+     \end{figure}
+     %%%%%%%%% 13
+    
+    \item \textbf{Salas de entrenamiento en el edificio 1 o piso 5 de cualquier edificio}\\
+     Consulta:\\ \textsc{ SELECT * FROM sala\_entrenamiento\\ WHERE sala\_entrenamiento.id\_edificio = 1\\ OR sala\_entrenamiento.id\_piso = 5;
+}%%15
+\begin{figure}[h]
+    \centering
+    \includegraphics[scale=.5]{PROYECTOFINAL/Consultas/15.png}
+\end{figure}
+     
+    
+\end{enumerate}
+\end{document}
